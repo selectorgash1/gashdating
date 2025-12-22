@@ -2,14 +2,28 @@
 import React from 'react';
 import { MOCK_EVENTS } from '../constants';
 
-const EventsScreen: React.FC = () => {
+// Define props interface to include onOpenGroups navigation function
+interface EventsScreenProps {
+  onOpenGroups: () => void;
+}
+
+const EventsScreen: React.FC<EventsScreenProps> = ({ onOpenGroups }) => {
   return (
     <div className="p-4 bg-slate-50 min-h-full">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-slate-800">Community</h2>
-        <button className="bg-rose-500 text-white text-sm font-bold px-4 py-2 rounded-xl">
-          Create Event
-        </button>
+        <div className="flex space-x-2">
+          {/* Added navigation to groups screen */}
+          <button 
+            onClick={onOpenGroups}
+            className="bg-slate-200 text-slate-700 text-sm font-bold px-4 py-2 rounded-xl hover:bg-slate-300 transition-colors"
+          >
+            Groups
+          </button>
+          <button className="bg-rose-500 text-white text-sm font-bold px-4 py-2 rounded-xl">
+            Create Event
+          </button>
+        </div>
       </div>
 
       <div className="flex space-x-2 mb-6 overflow-x-auto no-scrollbar">

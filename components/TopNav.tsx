@@ -2,13 +2,15 @@
 import React, { useState } from 'react';
 import { AppScreen } from '../types';
 
+// Updated interface to include onBack prop required by App.tsx
 interface TopNavProps {
   currentScreen: AppScreen;
   notificationsCount: number;
   onNavigate: (screen: AppScreen) => void;
+  onBack: () => void;
 }
 
-const TopNav: React.FC<TopNavProps> = ({ currentScreen, notificationsCount, onNavigate }) => {
+const TopNav: React.FC<TopNavProps> = ({ currentScreen, notificationsCount, onNavigate, onBack }) => {
   const [showNotifications, setShowNotifications] = useState(false);
 
   const getSubTitle = () => {
@@ -64,7 +66,7 @@ const TopNav: React.FC<TopNavProps> = ({ currentScreen, notificationsCount, onNa
       {showNotifications && (
         <div className="fixed inset-0 z-[60] flex items-start justify-end p-4 pt-24">
           <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" onClick={() => setShowNotifications(false)} />
-          <div className="relative w-full max-w-sm bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden animate-in slide-in-from-top-4 duration-300">
+          <div className="relative w-full max-sm bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden animate-in slide-in-from-top-4 duration-300">
             <div className="p-6 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
               <h3 className="font-black text-[10px] uppercase tracking-[0.3em] text-slate-400">Gash Activity</h3>
               <button className="text-[10px] font-bold text-rose-500 uppercase">Clear All</button>

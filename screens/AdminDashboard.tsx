@@ -7,9 +7,10 @@ import { updateSiteConfig } from '../services/supabase';
 interface AdminDashboardProps {
   initialConfig: SiteConfig | null;
   onUpdateConfig: () => void;
+  onBack: () => void;
 }
 
-const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig, onUpdateConfig }) => {
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig, onUpdateConfig, onBack }) => {
   const [users, setUsers] = useState(MOCK_USERS);
   const [search, setSearch] = useState('');
   const [booting, setBooting] = useState(true);
@@ -96,6 +97,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig, onUpdate
       {/* Architect HUD Header */}
       <header className="p-10 border-b border-slate-900 flex justify-between items-center bg-slate-950/80 backdrop-blur-2xl sticky top-0 z-50">
         <div className="flex items-center space-x-6">
+           <button 
+             onClick={onBack}
+             className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-slate-800 transition-colors mr-2"
+           >
+              <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" /></svg>
+           </button>
            <div className="w-14 h-14 bg-rose-600 rounded-2xl flex items-center justify-center text-white text-3xl font-black shadow-2xl italic">G</div>
            <div>
               <h1 className="text-3xl font-black tracking-tighter text-white italic">Gash Architect Console</h1>
@@ -117,6 +124,58 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig, onUpdate
       </header>
 
       <div className="p-10 animate-in fade-in duration-500">
+        {activeTab === 'METRICS' && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[
+              { label: 'Global Network', value: '14,208', growth: '+12%', icon: '🌏' },
+              { label: 'Active Streams', value: '1,052', growth: 'Optimal', icon: '💠' },
+              { label: 'Gross Vault', value: '$128.5k', growth: '+18%', icon: '💳' },
+              { label: 'Defense Status', value: '100%', growth: 'Active', icon: '🛡️' }
+            ].map(s => (
+              <div key={s.label} className="bg-slate-900/50 border border-slate-800 p-8 rounded-[3rem] group hover:border-rose-500/50 transition-all shadow-2xl">
+                 <div className="text-4xl mb-6">{s.icon}</div>
+                 <div className="text-5xl font-black text-white tracking-tighter mb-2">{s.value}</div>
+                 <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{s.label}</span>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded ${s.growth === 'Optimal' || s.growth.startsWith('+') ? 'text-emerald-400 bg-emerald-500/10' : 'text-rose-400 bg-rose-500/10'}`}>
+                       {s.growth}
+                    </span>
+                 </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'USER_CONTROL' && (
+          <div className="space-y-4">
+             <div className="flex items-center justify-between mb-10">
+                <h2 className="text-2xl font-black text-white tracking-tighter italic flex items-center">
+                   <span className="w-4 h-[2px] bg-rose-500 mr-4"></span>
+                   Citizen Database
+                </h2>
+                <input 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search Global IDs..." 
+                  className="bg-slate-900 border-none rounded-2xl px-8 py-4 text-sm font-bold w-96 focus:ring-2 focus:ring-rose-500 outline-none text-white placeholder:text-slate-700 shadow-inner"
+                />
+             </div>
+             {users.filter(u => u.name.toLowerCase().includes(search.toLowerCase())).map(user => (
+                <div key={user.id} className="bg-slate-900/40 border border-slate-900 p-8 rounded-[3rem] flex items-center group hover:bg-slate-900 transition-all border-l-8 border-l-slate-800 hover:border-l-rose-500">
+                  <img src={user.photos[0]} className="w-20 h-20 rounded-2xl object-cover grayscale opacity-30 group-hover:grayscale-0 group-hover:opacity-100 transition-all shadow-2xl" />
+                  <div className="ml-8 flex-grow">
+                    <h3 className="text-xl font-black text-white italic">{user.name}, {user.age}</h3>
+                    <p className="text-[10px] font-black uppercase text-slate-500 tracking-[0.3em] mt-1">{user.location} • {user.occupation}</p>
+                  </div>
+                  <div className="flex space-x-4">
+                    <button className="w-14 h-14 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all">✓</button>
+                    <button className="w-14 h-14 bg-rose-500/10 text-rose-500 rounded-2xl flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all">×</button>
+                  </div>
+                </div>
+             ))}
+          </div>
+        )}
+
         {activeTab === 'SITE_CMS' && (
           <div className="space-y-16 max-w-5xl">
              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">

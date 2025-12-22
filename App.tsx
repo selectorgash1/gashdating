@@ -23,6 +23,7 @@ import AdBanner from './components/AdBanner';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>(AppScreen.WELCOME);
+  const [previousScreen, setPreviousScreen] = useState<AppScreen>(AppScreen.DASHBOARD);
   const [session, setSession] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
@@ -33,7 +34,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const initializeApp = async () => {
-      // Fetch dynamic config first
       const config = await getSiteConfig();
       setSiteConfig(config);
 
@@ -41,7 +41,6 @@ const App: React.FC = () => {
       setSession(initialSession);
       if (initialSession) await checkStatus(initialSession.user.id);
       
-      // Artificial delay for branding splash
       setTimeout(() => setIsLoading(false), 1500);
     };
 
@@ -76,6 +75,11 @@ const App: React.FC = () => {
   };
 
   const navigateTo = (screen: AppScreen, params?: any) => {
+    // Record history for logical "Back" behavior
+    if (currentScreen !== screen) {
+      setPreviousScreen(currentScreen);
+    }
+
     if (screen === AppScreen.CHAT && params?.matchId) {
       setActiveChatId(params.matchId);
     }
@@ -83,6 +87,11 @@ const App: React.FC = () => {
       setViewingUser(params.user);
     }
     setCurrentScreen(screen);
+    window.scrollTo(0, 0);
+  };
+
+  const goBack = () => {
+    setCurrentScreen(previousScreen);
     window.scrollTo(0, 0);
   };
 
@@ -139,14 +148,14 @@ const App: React.FC = () => {
       case AppScreen.SAFETY:
         return <SafetyScreen onBack={() => navigateTo(AppScreen.PROFILE)} />;
       case AppScreen.ADMIN:
-        return <AdminDashboard initialConfig={siteConfig} onUpdateConfig={refreshConfig} />;
+        return <AdminDashboard initialConfig={siteConfig} onUpdateConfig={refreshConfig} onBack={goBack} />;
       case AppScreen.USER_DETAIL:
         return viewingUser ? (
           <ProfileDetailScreen 
             user={viewingUser} 
-            onBack={() => navigateTo(AppScreen.DASHBOARD)} 
-            onLike={() => navigateTo(AppScreen.DASHBOARD)}
-            onPass={() => navigateTo(AppScreen.DASHBOARD)}
+            onBack={goBack} 
+            onLike={goBack}
+            onPass={goBack}
           />
         ) : <DashboardScreen siteConfig={siteConfig} onSelectUser={() => {}} />;
       default:
@@ -161,7 +170,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 overflow-x-hidden font-sans text-slate-900 selection:bg-rose-100">
-      {showNav && <TopNav currentScreen={currentScreen} notificationsCount={1} onNavigate={navigateTo} />}
+      {showNav && <TopNav currentScreen={currentScreen} notificationsCount={1} onNavigate={navigateTo} onBack={goBack} />}
       {showNav && <AdBanner config={siteConfig} />}
       <main className={`flex-grow flex flex-col ${showNav ? 'pt-20 pb-20' : ''}`}>
         {renderContent()}
@@ -171,7 +180,7 @@ const App: React.FC = () => {
       {/* Admin Quick Entry */}
       {isAdmin && currentScreen !== AppScreen.ADMIN && (
         <button 
-          onClick={() => setCurrentScreen(AppScreen.ADMIN)}
+          onClick={() => navigateTo(AppScreen.ADMIN)}
           className="fixed bottom-24 right-6 w-14 h-14 bg-slate-950 text-white rounded-[1.5rem] shadow-2xl z-[100] flex items-center justify-center border-2 border-rose-500 active:scale-90 transition-all"
         >
           <span className="text-xl font-black italic">A</span>
