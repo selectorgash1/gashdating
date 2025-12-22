@@ -1,0 +1,23 @@
+
+{
+  "name": "Gash Dating",
+  "short_name": "Gash",
+  "description": "Global Connections Without Borders",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#E11D48",
+  "icons": [
+    {
+      "src": "https://picsum.photos/seed/gashicon/192/192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://picsum.photos/seed/gashicon/512/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

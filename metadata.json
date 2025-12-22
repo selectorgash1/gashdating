@@ -1,0 +1,9 @@
+{
+  "name": "Gash Dating",
+  "description": "A global dating PWA for meaningful international connections, leveraging AI for matching and real-time translation.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
