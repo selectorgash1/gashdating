@@ -1,25 +1,26 @@
 
 import React, { useState, useEffect } from 'react';
-import { AppScreen, SiteConfig } from './types';
-import { supabase, getMyProfile, getSiteConfig } from './services/supabase';
-import { MOCK_USERS } from './constants';
-import WelcomeScreen from './screens/WelcomeScreen';
-import SignUpScreen from './screens/SignUpScreen';
-import SignInScreen from './screens/SignInScreen';
-import DashboardScreen from './screens/DashboardScreen';
-import BrowseScreen from './screens/BrowseScreen';
-import MatchesScreen from './screens/MatchesScreen';
-import ChatScreen from './screens/ChatScreen';
-import EventsScreen from './screens/EventsScreen';
-import GroupsScreen from './screens/GroupsScreen';
-import ProfileScreen from './screens/ProfileScreen';
-import PremiumScreen from './screens/PremiumScreen';
-import ProfileDetailScreen from './screens/ProfileDetailScreen';
-import SafetyScreen from './screens/SafetyScreen';
-import AdminDashboard from './screens/AdminDashboard';
-import BottomNav from './components/BottomNav';
-import TopNav from './components/TopNav';
-import AdBanner from './components/AdBanner';
+import { AppScreen, SiteConfig } from './types.ts';
+import { supabase, getMyProfile, getSiteConfig } from './services/supabase.ts';
+import { MOCK_USERS } from './constants.tsx';
+import WelcomeScreen from './screens/WelcomeScreen.tsx';
+import SignUpScreen from './screens/SignUpScreen.tsx';
+import SignInScreen from './screens/SignInScreen.tsx';
+import DashboardScreen from './screens/DashboardScreen.tsx';
+import BrowseScreen from './screens/BrowseScreen.tsx';
+import MatchesScreen from './screens/MatchesScreen.tsx';
+import ChatScreen from './screens/ChatScreen.tsx';
+import EventsScreen from './screens/EventsScreen.tsx';
+import GroupsScreen from './screens/GroupsScreen.tsx';
+import ProfileScreen from './screens/ProfileScreen.tsx';
+import PremiumScreen from './screens/PremiumScreen.tsx';
+import ProfileDetailScreen from './screens/ProfileDetailScreen.tsx';
+import SafetyScreen from './screens/SafetyScreen.tsx';
+import AdminDashboard from './screens/AdminDashboard.tsx';
+import BottomNav from './components/BottomNav.tsx';
+import TopNav from './components/TopNav.tsx';
+import AdBanner from './components/AdBanner.tsx';
+import AuroraBackground from './components/AuroraBackground.tsx';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<AppScreen>(AppScreen.WELCOME);
@@ -75,7 +76,6 @@ const App: React.FC = () => {
   };
 
   const navigateTo = (screen: AppScreen, params?: any) => {
-    // Record history for logical "Back" behavior
     if (currentScreen !== screen) {
       setPreviousScreen(currentScreen);
     }
@@ -169,19 +169,19 @@ const App: React.FC = () => {
   const showNav = (session || isAdmin) && !isAuth && !isOnboarding && !isImmersive;
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 overflow-x-hidden font-sans text-slate-900 selection:bg-rose-100">
+    <div className="flex flex-col min-h-screen font-sans text-slate-900 selection:bg-rose-100">
+      <AuroraBackground />
       {showNav && <TopNav currentScreen={currentScreen} notificationsCount={1} onNavigate={navigateTo} onBack={goBack} />}
       {showNav && <AdBanner config={siteConfig} />}
-      <main className={`flex-grow flex flex-col ${showNav ? 'pt-20 pb-20' : ''}`}>
+      <main className={`flex-grow flex flex-col relative z-10 ${showNav ? 'pt-20 pb-20' : ''}`}>
         {renderContent()}
       </main>
       {showNav && <BottomNav currentScreen={currentScreen} onNavigate={navigateTo} isPremium={userProfile?.is_premium} />}
       
-      {/* Admin Quick Entry */}
       {isAdmin && currentScreen !== AppScreen.ADMIN && (
         <button 
           onClick={() => navigateTo(AppScreen.ADMIN)}
-          className="fixed bottom-24 right-6 w-14 h-14 bg-slate-950 text-white rounded-[1.5rem] shadow-2xl z-[100] flex items-center justify-center border-2 border-rose-500 active:scale-90 transition-all"
+          className="fixed bottom-24 right-6 w-14 h-14 bg-slate-950 text-white rounded-[1.5rem] shadow-2xl z-[100] flex items-center justify-center border-2 border-rose-500 active:scale-90 transition-all shine-effect"
         >
           <span className="text-xl font-black italic">A</span>
         </button>
