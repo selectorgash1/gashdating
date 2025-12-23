@@ -17,13 +17,15 @@
     <style>
         :root {
             --brand-rose: #E11D48;
+            --brand-indigo: #4f46e5;
+            --brand-emerald: #10b981;
         }
         body {
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
-            background-color: #020617; /* Dark base for aurora visibility */
+            background-color: #020617; /* Deep base for visibility */
             overscroll-behavior-y: none;
-            color: #0f172a;
+            color: #f8fafc;
             overflow: hidden;
         }
         .no-scrollbar::-webkit-scrollbar {
@@ -34,62 +36,81 @@
             scrollbar-width: none;
         }
         
-        /* Aurora Mesh Background */
+        /* Aurora Mesh Background Engine */
         .aurora-bg {
             position: fixed;
             inset: 0;
             z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 100%);
+            background: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
             overflow: hidden;
         }
         
         .blob {
             position: absolute;
-            width: 800px;
-            height: 800px;
-            background: var(--brand-rose);
-            filter: blur(120px);
-            opacity: 0.15;
+            width: 90vw;
+            height: 90vw;
+            filter: blur(80px);
+            opacity: 0.35; /* Increased opacity */
             border-radius: 50%;
-            animation: move 20s infinite alternate;
+            mix-blend-mode: screen;
+            animation: move 25s infinite alternate ease-in-out;
+        }
+        
+        .blob-1 {
+            background: var(--brand-rose);
+            top: -20%;
+            left: -20%;
         }
         
         .blob-2 {
-            background: #4f46e5;
-            animation-delay: -5s;
-            width: 600px;
-            height: 600px;
+            background: var(--brand-indigo);
+            bottom: -20%;
+            right: -20%;
+            animation-delay: -7s;
         }
 
         .blob-3 {
-            background: #10b981;
-            animation-delay: -10s;
-            width: 700px;
-            height: 700px;
+            background: var(--brand-emerald);
+            top: 40%;
+            left: 30%;
+            width: 60vw;
+            height: 60vw;
+            animation-delay: -14s;
+            opacity: 0.15;
         }
 
         @keyframes move {
-            from { transform: translate(-20%, -20%) scale(1); }
-            to { transform: translate(20%, 20%) scale(1.2); }
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(10%, 15%) scale(1.1) rotate(10deg); }
+            66% { transform: translate(-10%, 20%) scale(0.9) rotate(-10deg); }
+            100% { transform: translate(0, 0) scale(1) rotate(0deg); }
         }
 
-        /* Floating Crystal Animation */
+        /* Vertical "Drop" Crystals */
         .crystal {
             position: absolute;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            box-shadow: 0 0 30px rgba(225, 29, 72, 0.1);
+            animation: crystal-float 20s infinite linear;
+        }
+
+        @keyframes crystal-float {
+            0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-20vh) translateX(20px) rotate(360deg); opacity: 0; }
+        }
+
+        /* Shine & Polish */
+        .glass-card {
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            animation: float-vertical 15s infinite ease-in-out;
         }
 
-        @keyframes float-vertical {
-            0%, 100% { transform: translateY(110vh) rotate(0deg); }
-            50% { transform: translateY(-10vh) rotate(180deg); }
-        }
-
-        /* Shine Effect */
         .shine-effect {
             position: relative;
             overflow: hidden;
@@ -97,30 +118,27 @@
         .shine-effect::after {
             content: "";
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
             background: linear-gradient(
                 45deg,
                 transparent 45%,
-                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.2) 50%,
                 transparent 55%
             );
-            animation: shine 4s infinite;
+            animation: shine-glide 6s infinite;
         }
 
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%); }
-            100% { transform: translateX(100%) translateY(100%); }
+        @keyframes shine-glide {
+            0% { transform: translate(-30%, -30%); }
+            20%, 100% { transform: translate(30%, 30%); }
         }
 
-        /* Glassmorphism */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        /* Text readability shadow */
+        .text-glow {
+            text-shadow: 0 0 20px rgba(225, 29, 72, 0.5);
         }
     </style>
     <script>
@@ -128,16 +146,8 @@
         theme: {
           extend: {
             colors: {
-              rose: {
-                50: '#FFF1F2',
-                500: '#E11D48',
-                600: '#BE123C',
-                950: '#4c0519',
-              },
-              slate: {
-                850: '#1e293b',
-                950: '#020617',
-              }
+              rose: { 50: '#FFF1F2', 500: '#E11D48', 600: '#BE123C', 950: '#4c0519' },
+              slate: { 850: '#1e293b', 950: '#020617' }
             }
           }
         }
